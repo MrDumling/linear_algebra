@@ -1,20 +1,13 @@
-use num_traits::identities::{self};
 use std::ops::*;
+use crate::matrix_number::MatrixNumber;
 
 #[derive(PartialEq, Debug, Clone, Copy)]
-pub struct Matrix2D<
-    T: Add<Output = T> + Mul<Output = T> + Copy + identities::One + identities::Zero,
-    const ROWS: usize,
-    const COLS: usize,
-> {
+pub struct Matrix2D<T: MatrixNumber, const ROWS: usize, const COLS: usize> {
     pub contents: [[T; COLS]; ROWS],
 }
 
-impl<
-        T: Add<Output = T> + Copy + identities::One + identities::Zero,
-        const ROWS: usize,
-        const COLS: usize,
-    > Add<Matrix2D<T, ROWS, COLS>> for Matrix2D<T, ROWS, COLS>
+impl<T: MatrixNumber, const ROWS: usize, const COLS: usize> Add<Matrix2D<T, ROWS, COLS>>
+    for Matrix2D<T, ROWS, COLS>
 {
     type Output = Matrix2D<T, ROWS, COLS>;
 
@@ -38,7 +31,7 @@ impl<
 }
 
 impl<
-        T: Add<Output = T> + Mul<Output = T> + Copy + identities::One + identities::Zero,
+        T: MatrixNumber,
         const LHS_ROWS: usize,
         const SHARED_DIMENSION: usize,
         const RHS_COLS: usize,
@@ -61,11 +54,8 @@ impl<
     }
 }
 
-impl<
-        T: Add<Output = T> + Mul<Output = T> + Copy + identities::One + identities::Zero,
-        const ROWS: usize,
-        const COLS: usize,
-    > Mul<[T; COLS]> for Matrix2D<T, ROWS, COLS>
+impl<T: MatrixNumber, const ROWS: usize, const COLS: usize> Mul<[T; COLS]>
+    for Matrix2D<T, ROWS, COLS>
 {
     type Output = [T; ROWS];
 
@@ -87,12 +77,7 @@ impl<
     }
 }
 
-impl<
-        T: Add<Output = T> + Mul<Output = T> + Copy + identities::One + identities::Zero,
-        const ROWS: usize,
-        const COLS: usize,
-    > Matrix2D<T, ROWS, COLS>
-{
+impl<T: MatrixNumber, const ROWS: usize, const COLS: usize> Matrix2D<T, ROWS, COLS> {
     pub fn zero() -> Self {
         Matrix2D {
             contents: [[T::zero(); COLS]; ROWS],
@@ -105,7 +90,7 @@ impl<
         for row_index in 0..ROWS {
             output[row_index] = self.contents[row_index][column_index];
         }
-        
+
         output
     }
 
@@ -117,16 +102,12 @@ impl<
         }
 
         Matrix2D {
-            contents: current_contents
+            contents: current_contents,
         }
     }
 }
 
-impl<
-        T: Add<Output = T> + Mul<Output = T> + Copy + identities::One + identities::Zero,
-        const SIZE: usize,
-    > Matrix2D<T, SIZE, SIZE>
-{
+impl<T: MatrixNumber, const SIZE: usize> Matrix2D<T, SIZE, SIZE> {
     pub fn identity() -> Matrix2D<T, SIZE, SIZE> {
         let mut output_contents = [[T::zero(); SIZE]; SIZE];
         for pivot_index in 0..SIZE {

@@ -1,4 +1,5 @@
 mod matrix_2d;
+mod matrix_number;
 
 #[cfg(test)]
 mod tests {
