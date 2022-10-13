@@ -118,4 +118,63 @@ impl<T: MatrixNumber, const SIZE: usize> Matrix2D<T, SIZE, SIZE> {
             contents: output_contents,
         }
     }
+    /// It is highly recommended to use a floating point number for T to avoid errors
+    pub fn determinant(&self) -> T {
+        if SIZE == 1 {
+            return self.contents[0][0];
+        }
+
+        let (l, u) = self.lu_decomposition();
+        let l_deterimient = {
+            let mut det = T::one();
+            for i in 0..SIZE {
+                det *= l.contents[i][i];
+            }
+            det
+        };
+
+        let u_deterimient = {
+            let mut det = T::one();
+            for i in 0..SIZE {
+                det *= u.contents[i][i];
+            }
+            det
+        };
+
+        l_deterimient * u_deterimient
+    }
+
+    pub fn lu_decomposition(&self) -> (Matrix2D<T, SIZE, SIZE>, Matrix2D<T, SIZE, SIZE>) {
+        //uses Doolittle algorithm: https://www.geeksforgeeks.org/doolittle-algorithm-lu-decomposition/
+        let mut lower_triangle = [[T::zero(); SIZE]; SIZE];
+        let mut upper_triangle = [[T::zero(); SIZE]; SIZE];
+
+        for i in 0..SIZE {
+            for k in i..SIZE {
+                let mut sum = T::zero();
+                for j in 0..i {
+                    sum += lower_triangle[i][j] * upper_triangle[j][k];
+                }
+                upper_triangle[i][k] = self.contents[i][k] - sum;
+            }
+
+            for k in i..SIZE {
+                if i == k {
+                    lower_triangle[i][i] = T::one();
+                } else {
+                    let mut sum = T::zero();
+                    for j in 0..i {
+                        sum += lower_triangle[k][j] * upper_triangle[j][i];
+                    }
+                    lower_triangle[k][i] = (self.contents[k][i] - sum) / upper_triangle[i][i];
+                }
+            }
+        }
+
+        (Matrix2D {
+            contents: lower_triangle
+        }, Matrix2D {
+            contents: upper_triangle
+        })
+    }
 }

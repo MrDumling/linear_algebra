@@ -1,8 +1,10 @@
-mod matrix_2d;
+pub mod matrix_2d;
 mod matrix_number;
 
 #[cfg(test)]
 mod tests {
+    use crate::matrix_2d::Matrix2D;
+
     #[test]
     fn matrix_2d_addition() {
         use crate::matrix_2d::Matrix2D;
@@ -70,5 +72,26 @@ mod tests {
                 contents: [[38, 13], [86, 43]],
             }
         );
+    }
+
+    #[test]
+    //Note for unit tests: account for floating point error if using floating point
+    fn matrix_decompisition() {
+        use crate::matrix_2d::Matrix2D;
+
+        let matrix_a = Matrix2D {
+            contents: [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+        };
+
+        let (l, u) = matrix_a.lu_decomposition();
+        assert_eq!(l * u, matrix_a);
+    }
+    
+    #[test] 
+    fn matrix_determinate() {
+        let matrix_a = Matrix2D{
+            contents: [[2.0, -3.0, 1.0], [2.0, 0.0, -1.0], [1.0, 4.0, 5.0]],
+        };
+        assert_eq!(matrix_a.determinant(), 49.0);
     }
 }

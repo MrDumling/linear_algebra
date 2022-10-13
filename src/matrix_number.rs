@@ -2,7 +2,7 @@ use std::ops::*;
 use num_traits::identities::{self};
 
 pub trait MatrixNumber:
-    Add<Output = Self> + Sized + Mul<Output = Self> + Copy + identities::One + identities::Zero
+    Sized + Add<Output = Self> + Mul<Output = Self> + Sub<Output = Self> + Div<Output = Self> + AddAssign + MulAssign + Copy + identities::One + identities::Zero
 {
 }
 
