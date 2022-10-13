@@ -118,7 +118,7 @@ impl<T: MatrixNumber, const SIZE: usize> Matrix2D<T, SIZE, SIZE> {
             contents: output_contents,
         }
     }
-    /// It is highly recommended to use a floating point number for T to avoid errors
+    /// It is highly recommended to use a floating point number for T to avoid rounding errors
     pub fn determinant(&self) -> T {
         if SIZE == 1 {
             return self.contents[0][0];
